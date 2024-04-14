@@ -1,0 +1,28 @@
+﻿<Application x:Class="ContrabandAge.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:ContrabandAge"
+             StartupUri="MainWindow.xaml">
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Icons/IconDictionary.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+            <Style x:Key="LabelStyle" TargetType="Label">
+                <Setter Property="Foreground" Value="White"/>
+                <Setter Property="Background" Value="Transparent"/>
+            </Style>
+            <Style x:Key="TextBoxStyle" TargetType="TextBox">
+                <Setter Property="Background" Value="Transparent"/>
+                <Setter Property="Foreground" Value="White"/>
+                <Setter Property="BorderBrush" Value="Transparent"/>
+                <Setter Property="BorderThickness" Value="0"/>
+                <Setter Property="CaretBrush" Value="White"/>
+            </Style>
+            <Style x:Key="TextBlockStyle" TargetType="TextBlock">
+                <Setter Property="Background" Value="Transparent"/>
+                <Setter Property="Foreground" Value="White"/>
+            </Style>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>
