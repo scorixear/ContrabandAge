@@ -8,6 +8,12 @@
     <UseWPF>true</UseWPF>
     <StartupObject>ContrabandAge.App</StartupObject>
     <ApplicationIcon>calendar-outline.ico</ApplicationIcon>
+    <Title>ContrabandAge</Title>
+    <Authors>Paul Keller</Authors>
+    <Copyright>MIT License</Copyright>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <RepositoryUrl>https://github.com/scorixear/ContrabandAge</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -20,6 +26,13 @@
 
   <ItemGroup>
     <Content Include="calendar-outline.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
   </ItemGroup>
 
 </Project>
