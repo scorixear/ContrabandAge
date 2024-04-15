@@ -28,6 +28,8 @@ namespace ContrabandAge
             { 12, "DEC" }
         };
 
+        private readonly Settings settings;
+
         // INotifyPropertyChanged implementation
         public event PropertyChangedEventHandler? PropertyChanged;
         /// <summary>
@@ -40,10 +42,8 @@ namespace ContrabandAge
         }
 
         #region Binding Properties
-        // The age of the person
-        private int _age = 31;
         // The age as a string
-        private string _ageString = "31";
+        private string _ageString;
         // The age as a binding property
         // accessing the _ageString variable
         public string Age
@@ -62,11 +62,11 @@ namespace ContrabandAge
                 // removing any non-numeric characters
                 int newValue = int.Parse(OnlyNumber().Replace(value, ""));
                 // if the new value is different from the current value
-                if (newValue != _age)
+                if (newValue != settings.Age)
                 {
                     // update the _age and _ageString
-                    _age = newValue;
-                    _ageString = _age.ToString();
+                    settings.Age = newValue;
+                    _ageString = newValue.ToString();
                     // raise the PropertyChanged event
                     OnPropertyChanged(nameof(Age));
                     // and update the birth dates
@@ -95,10 +95,8 @@ namespace ContrabandAge
             get => $"{_birthTo.Day:D2} {_monthDic[_birthTo.Month]} {_birthTo.Year}";
         }
 
-        // The current day
-        private DateOnly _currentDay = DateOnly.ParseExact("09.05.1979", "dd.MM.yyyy", CultureInfo.InvariantCulture);
         // The current day as a string
-        private string _currentDayString = "09.05.1979";
+        private string _currentDayString;
         // The current day as a Binding property
         public string CurrentDay
         {
@@ -108,11 +106,11 @@ namespace ContrabandAge
                 // try to parse the value to a DateOnly object
                 bool success = DateOnly.TryParseExact(value, "dd.MM.yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateOnly new_value);
                 // if the parsing was successful and the new value is different from the current value
-                if (success && new_value != _currentDay)
+                if (success && new_value != settings.CurrentDay)
                 {
                     // update the _currentDay and _currentDayString
-                    _currentDay = new_value;
-                    _currentDayString = _currentDay.ToString("dd.MM.yyyy");
+                    settings.CurrentDay = new_value;
+                    _currentDayString = new_value.ToString("dd.MM.yyyy");
                     // raise the PropertyChanged event
                     OnPropertyChanged(nameof(CurrentDay));
                     // and update the birth dates
@@ -133,9 +131,18 @@ namespace ContrabandAge
 
         public MainWindow()
         {
+
+            // initialize the settings
+            settings = new Settings();
+
+            // update the age and current day
+            _ageString = settings.Age.ToString();
+            _currentDayString = settings.CurrentDay.ToString("dd.MM.yyyy");
+
             InitializeComponent();
             // set the DataContext to this
             DataContext = this;
+
             // initialize the birth dates
             UpdateBirthDates();
         }
@@ -207,7 +214,7 @@ namespace ContrabandAge
         /// </summary>
         public void IncreaseDate()
         {
-            CurrentDay = _currentDay.AddDays(1).ToString("dd.MM.yyyy");
+            CurrentDay = settings.CurrentDay.AddDays(1).ToString("dd.MM.yyyy");
         }
 
         /// <summary>
@@ -215,7 +222,7 @@ namespace ContrabandAge
         /// </summary>
         public void DecreaseDate()
         {
-            CurrentDay = _currentDay.AddDays(-1).ToString("dd.MM.yyyy");
+            CurrentDay = settings.CurrentDay.AddDays(-1).ToString("dd.MM.yyyy");
         }
 
         /// <summary>
@@ -223,7 +230,7 @@ namespace ContrabandAge
         /// </summary>
         private void UpdateBirthDates()
         {
-            _birthTo = _currentDay.AddYears(-1 * _age);
+            _birthTo = settings.CurrentDay.AddYears(-1 * settings.Age);
             _birthFrom = _birthTo.AddYears(-1).AddDays(1);
             OnPropertyChanged(nameof(BirthFrom));
             OnPropertyChanged(nameof(BirthTo));
