@@ -139,11 +139,21 @@ namespace ContrabandAge
             _ageString = settings.Age.ToString();
             _currentDayString = settings.CurrentDay.ToString("dd.MM.yyyy");
 
+            settings.SyncChange += OnSyncChanged;
             InitializeComponent();
             // set the DataContext to this
             DataContext = this;
 
             // initialize the birth dates
+            UpdateBirthDates();
+        }
+
+        private void OnSyncChanged()
+        {
+            _ageString = settings.Age.ToString();
+            _currentDayString = settings.CurrentDay.ToString("dd.MM.yyyy");
+            OnPropertyChanged(nameof(Age));
+            OnPropertyChanged(nameof(CurrentDay));
             UpdateBirthDates();
         }
 

@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using System.Text.Json;
+using Timer = System.Timers.Timer;
 
 namespace ContrabandAge
 {
@@ -9,7 +10,7 @@ namespace ContrabandAge
         private readonly string Location = Environment.ExpandEnvironmentVariables(@"%appdata%\ContrabandAge\");
         private readonly string FileName = "settings.json";
 
-        private readonly SettingsJson settingsJson;
+        private SettingsJson settingsJson;
         private readonly JsonSerializerOptions serializerOptions = new()
         {
             AllowTrailingCommas = true,
@@ -17,6 +18,8 @@ namespace ContrabandAge
             ReadCommentHandling = JsonCommentHandling.Skip,
             WriteIndented = true
         };
+
+        private Timer SyncTimer { get; set; } = new(1000);
 
         public DateOnly CurrentDay
         {
@@ -38,10 +41,30 @@ namespace ContrabandAge
             }
         }
 
+        public delegate void SyncChangeHandler();
+        public event SyncChangeHandler? SyncChange;
+
         public Settings()
         {
             settingsJson = LoadJson();
+            SyncTimer.AutoReset = true;
+            SyncTimer.Elapsed += (sender, args) => Sync();
+            SyncTimer.Start();
         }
+
+        private void Sync()
+        {
+            lock (settingsJson)
+            {
+                SettingsJson newSettings = LoadJson();
+                if (settingsJson.Compare(newSettings) == false)
+                {
+                    settingsJson = newSettings;
+                    SyncChange?.Invoke();
+                }
+            }
+        }
+
 
         private void SaveJson(SettingsJson settingsJson)
         {
@@ -83,6 +106,11 @@ namespace ContrabandAge
         {
             public string CurrentDay { get; set; } = "01.01.1980";
             public int Age { get; set; } = 50;
+
+            public bool Compare(SettingsJson other)
+            {
+                return CurrentDay == other.CurrentDay && Age == other.Age;
+            }
         }
     }
 }
